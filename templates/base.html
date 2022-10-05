@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+  <meta charset="utf-8">
+    {% load static %} <link rel="stylesheet" type="text/css" href="{% static 'css/example.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        img {
+            width: 128px;
+            height: 128px;
+
+        }
+    </style>
+</head>
+<body>
+    {% load static %} <img src="{% static "RIP_lab/images/logo3.png" %}" />
+    <br>Добро пожаловать в зоомагазин "Название в разработке"!
+    <br>Сегодняшняя дата -> [ {{ data.current_date }} ] <-
+    <br>
+
+    {% block content %}{% endblock %}
+</body>
+</html>
+
+<!-- основной шаблон для каждой страницы -->

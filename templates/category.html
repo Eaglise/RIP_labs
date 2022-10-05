@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ data.name }}{% endblock %}
+
+{% block content %}
+    <div>Товары категории "{{ data.name }}"</div>
+<ul>
+    {% for item in data.items %}
+        {% if item.category == data.name %}
+        <div>{{ item.name }}</div>
+        <div>{{ item.price }}</div>
+        <img src= {{ item.img }} />
+        {% endif %}
+    {% empty %}
+        <li>Список пуст</li>
+    {% endfor %}
+</ul>
+{% endblock %}

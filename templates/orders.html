@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Список заказов{% endblock %}
+
+{% block content %}
+<ul>
+    {% for order in data.orders %}
+        <li><a href="{% url 'order_url' order.id %}">{{ order.title }}</a> </li>
+    {% empty %}
+        <li>Список пуст</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+<!-- наследует базовый шаблон -->
+
+<!-- { % include 'order_element.html' with element=order %} -->
