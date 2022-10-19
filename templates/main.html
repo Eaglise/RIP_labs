@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}"Зоомагазин ККК" - Главная страница{% endblock %}
+{% block title %}"Главная страница{% endblock %}
 
 {% block content %}
 <ul>
-    {% for animal in data.animals %}
-        <li><a href="{% url 'animal_url' animal.name %}">{{ animal.title }}</a> </li>
+<div>
+    {% for category in data.data %}
+        <li><a href="{% url 'category_url' category.id_category %}">{{ category.category_name }}</a> </li>
     {% empty %}
         <li>Список пуст</li>
     {% endfor %}
+</div>
 </ul>
 {% endblock %}

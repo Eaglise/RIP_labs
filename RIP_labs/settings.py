@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,14 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    #'Pension',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'PetShop.apps.PetshopConfig',
-    #'PetShop',
+    'Pension.apps.PensionConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -99,7 +100,7 @@ WSGI_APPLICATION = 'RIP_labs.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'petshop',
+        'NAME': 'Pensione',
         'USER': 'db_user',
         'PASSWORD': '123',
         'HOST': 'localhost',
@@ -143,11 +144,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+   os.path.join(BASE_DIR, 'Pension', "static"),
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # typically, os.path.join(os.path.dirname(__file__), 'media')
-MEDIA_ROOT = '/RIP_labs/migrations/static/RIP_lab/images'
+MEDIA_ROOT = '/Pension/static/RIP_lab/images'
 MEDIA_URL = '/images/'

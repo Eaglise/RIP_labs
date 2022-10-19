@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ data.name }}{% endblock %}
+{% block title %}{{ data.id }}{% endblock %}
 
 {% block content %}
-    <div>Товары категории "{{ data.name }}"</div>
+    <div style="text-align:center; font-size:40px; font-weight:bold;" >Товары категории "{{ data.category.category_name }}"</div>
 <ul>
-    {% for item in data.items %}
-        {% if item.category == data.name %}
-        <div>{{ item.name }}</div>
-        <div>{{ item.price }}</div>
-        <img src= {{ item.img }} />
+    {% for service in data.data %}
+        <img src= {{ service.image }} />
+        <div style="font-size:40px; font-weight:bold;">{{ service.service_name }}</div>
+        <div>Описание: {{ service.description }}</div>
+
+        {% if service.price == NULL %}
+            <div>Цена: уточняется у менеджера!</div>
+        {% elif service.price == 0 %}
+            <div>Цена: БЕСПЛАТНО!</div>
+        {% else %}
+            <div>Цена: {{ service.price }} руб.</div>
         {% endif %}
+
     {% empty %}
-        <li>Список пуст</li>
+        <li>Список пуст :(</li>
     {% endfor %}
 </ul>
 {% endblock %}

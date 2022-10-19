@@ -1,0 +1,30 @@
+body {
+  background-color: #ffa659;
+  font-size: 20pt
+}
+
+p {
+  color: red;
+  text-align:center;
+  font-size:150%;
+}
+
+img {
+  border-radius: 30px 30px 30px 30px;
+  width: 30%;
+}
+
+#Header {
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  border-radius: 5% 5% 0 0;
+  margin-top: 50px;
+}
+
+a.button {
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}

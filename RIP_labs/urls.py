@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from PetShop import views
+from Pension import views
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,11 +25,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hello/', views.hello),
-    path('orders/', views.GetOrders),
-    path('order/<int:id>/', views.GetOrder, name='order_url'),
-    path('', views.GetAnimals),
-    path('animal/<str:name>/', views.GetAnimal, name='animal_url'),
-    path('category/<str:name>/', views.GetCategory, name='category_url'),
+    path('', views.Main),
+    path('category/<int:id>/', views.GetCategory, name='category_url'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
