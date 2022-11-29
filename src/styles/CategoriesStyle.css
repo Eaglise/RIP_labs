@@ -1,0 +1,48 @@
+.page-name {
+    font-size: x-large;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+}
+
+.grid {
+    justify-content: center;
+}
+
+.empty-result-message {
+    display: flex;
+    justify-content: center;
+}
+
+.grid .col {
+    padding: 10px;
+    /*display: flex;*/
+    /*flex-flow: column;*/
+}
+
+.inputField input {
+    width: 200px;
+    margin-right: 5px;
+}
+
+.inputField .btn {
+    margin-left: 5px;
+}
+
+.row.make-columns {
+    -moz-column-width: 19em;
+    -webkit-column-width: 19em;
+    -moz-column-gap: 1em;
+    -webkit-column-gap:1em;
+}
+.row.make-columns > div {
+    display: inline-block;
+    padding:  .5rem;
+    width:  100%;
+}

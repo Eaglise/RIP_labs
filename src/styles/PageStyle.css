@@ -1,0 +1,19 @@
+.main-container {
+    width: 80%;
+}
+
+.empty-result-message {
+    display: flex;
+    justify-content: center;
+}
+
+.service-img {
+    display: block;
+    width: auto;
+    height: 60%;
+}
+
+.img {
+    display: flex;
+    justify-content: end;
+}
