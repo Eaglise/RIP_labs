@@ -7,16 +7,16 @@ class CategorySerializer(serializers.ModelSerializer):
         # Модель, которую мы сериализуем
         model = Categories
         # Поля, которые мы сериализуем
-        fields = ["id_category", "category_name"]
+        fields = '__all__'
 
 
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Services
-        fields = ["id_service", "id_category", "service_name", "price", "image", "description"]
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Users
-        fields = ["id_user", "login", "password"]
+        model = User
+        fields = '__all__'

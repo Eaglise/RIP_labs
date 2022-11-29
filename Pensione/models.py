@@ -1,11 +1,13 @@
 from django.db import models
-
-# Create your models here
+from django.contrib.auth.models import User
 
 
 class Categories(models.Model):
     id_category = models.AutoField(db_column='ID_category', primary_key=True)
     category_name = models.CharField(db_column='categoryName', unique=True, max_length=50)
+
+    def __str__(self):
+        return self.category_name
 
 
 class Services (models.Model):
@@ -16,24 +18,13 @@ class Services (models.Model):
     image = models.CharField(db_column='image', max_length=100, null=True, blank=True)
     description = models.CharField(db_column='description', max_length=200, null=True, blank=True)
 
-
-class Users(models.Model):
-    id_user = models.AutoField(db_column='ID_user', primary_key=True)
-    login = models.CharField(db_column='login', unique=True, max_length=30)
-    password = models.CharField(db_column='password', max_length=30)
-
-
-class Personal(models.Model):
-    id_personal = models.AutoField(db_column='ID_personal', primary_key=True)
-    name = models.CharField(db_column='name', max_length=50)
-    phone = models.CharField(db_column='phone', max_length=20)
-    email = models.CharField(db_column='email', max_length=30)
+    def __str__(self):
+        return self.service_name
 
 
 class Workers (models.Model):
     id_worker = models.AutoField(db_column='ID_worker', primary_key=True)
-    worker_user = models.ForeignKey(Users, on_delete=models.CASCADE)
-    worker_personal = models.ForeignKey(Personal, on_delete=models.CASCADE)
+    worker_user = models.ForeignKey(User, on_delete=models.CASCADE)
     worker_type = models.CharField(db_column='workerType', max_length=30)
     photo = models.CharField(db_column='photo', max_length=100, null=True, blank=True)
     description = models.CharField(db_column='description', max_length=200, null=True, blank=True)
@@ -50,8 +41,7 @@ class Choice(models.Model):
 
 class Client (models.Model):
     id_client = models.AutoField(db_column='ID_client', primary_key=True)
-    client_user = models.ForeignKey(Users, on_delete=models.CASCADE)
-    client_personal = models.ForeignKey(Personal, on_delete=models.CASCADE)
+    client_user = models.ForeignKey(User, on_delete=models.CASCADE)
     social_card_number = models.IntegerField(db_column='socialCardNumber', unique=True)
     client_address = models.CharField(db_column='clientAddress', max_length=100)
 

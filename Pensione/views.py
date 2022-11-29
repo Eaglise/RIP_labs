@@ -3,20 +3,16 @@ from Pensione.serializers import *
 from Pensione.models import *
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint, который позволяет просматривать и редактировать акции компаний
-    """
-    # queryset всех пользователей для фильтрации по дате последнего изменения
+class CategoryViewSet(viewsets.ModelViewSet):  # TODO
     queryset = Categories.objects.all()
-    serializer_class = CategorySerializer  # Сериализатор для модели
+    serializer_class = CategorySerializer
 
 
-class ServiceViewSet(viewsets.ModelViewSet):
+class ServiceViewSet(viewsets.ModelViewSet):  # TODO
     queryset = Services.objects.all()
     serializer_class = ServiceSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = Users.objects.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer

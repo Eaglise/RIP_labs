@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Pensione.apps.PensioneConfig',
     'rest_framework',
-    'fond',
+
 ]
 
 MIDDLEWARE = [
@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'RIP3.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Fond',
+        'NAME': 'Pensione',
         'USER': 'db_user',
         'PASSWORD': '123',
         'HOST': 'localhost',
