@@ -24,29 +24,23 @@ class Service(models.Model):
 
 class Worker(models.Model):
     id_worker = models.AutoField(db_column='ID_worker', primary_key=True)
-    worker_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    worker_user = models.ForeignKey(User, models.DO_NOTHING, verbose_name='worker_user', default=1, related_name='worker_user')
     worker_type = models.CharField(db_column='workerType', max_length=30)
     photo = models.CharField(db_column='photo', max_length=100, null=True, blank=True)
     description = models.CharField(db_column='description', max_length=200, null=True, blank=True)
 
-
-class Choice(models.Model):
-    id_choice = models.AutoField(db_column='ID_choice', primary_key=True)
-    id_service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    id_worker = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True)
-    reservation_date_start = models.DateTimeField(db_column='reservationDateStart', null=True)
-    reservation_date_end = models.DateTimeField(db_column='reservationDateEnd', null=True)
-    comment = models.CharField(db_column='comment', max_length=250, null=True, blank=True)
+    def __str__(self):
+        return self.worker_user.username
 
 
 class Client(models.Model):
     id_client = models.AutoField(db_column='ID_client', primary_key=True)
-    client_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    client_user = models.ForeignKey(User, models.DO_NOTHING, verbose_name='client_user', default=1, related_name='client_user')
     social_card_number = models.IntegerField(db_column='socialCardNumber', unique=True)
     client_address = models.CharField(db_column='clientAddress', max_length=100)
 
     def __str__(self):
-        return self.social_card_number
+        return self.client_user.username
 
 
 class Status(models.Model):
@@ -59,10 +53,26 @@ class Status(models.Model):
 
 class Order(models.Model):
     id_order = models.AutoField(db_column='ID_order', primary_key=True)
-    id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    id_choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    id_client = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    # id_choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
     id_manager = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True)
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
     order_date = models.DateTimeField(db_column='orderDate', auto_now_add=True)
     sum = models.BigIntegerField(default=0)
+
+    def __str__(self):
+        return f'Доставка №{self.id_order} --> {self.status.status}'
+
+
+class Choice(models.Model):
+    id_choice = models.AutoField(db_column='ID_choice', primary_key=True)
+    id_service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    id_worker = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True)
+    id_order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    reservation_date_start = models.DateTimeField(db_column='reservationDateStart', null=True)
+    reservation_date_end = models.DateTimeField(db_column='reservationDateEnd', null=True)
+    comment = models.CharField(db_column='comment', max_length=250, null=True, blank=True)
+
+    def __str__(self):
+        return f'Продажа №{self.id_choice}: {self.id_service.service_name}, доставка: {self.id_order.id_order}'
 

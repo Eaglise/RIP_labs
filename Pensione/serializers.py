@@ -16,10 +16,10 @@ class ServiceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = '__all__'
 
 
 class WorkerSerializer(serializers.ModelSerializer):
@@ -56,22 +56,37 @@ class ExtServiceSerializer(serializers.ModelSerializer):
    id_category = CategorySerializer(read_only=True)
    class Meta:
       model = Service
-      # fields=['id_service','service_name','id_category', 'description']
+      # fields=['id_service','service_name', 'id_category', 'price', 'image', 'description']
       fields = '__all__'
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'date_joined']
+
+
+class ExtOrderSerializer(serializers.ModelSerializer):
+   status = StatusSerializer(read_only=True)
+   id_manager = WorkerSerializer(read_only=True)
+   id_client = UserSerializer(read_only=True)
+   class Meta:
+      model = Order
+      # fields = ['id_order', 'id_status', 'order_date', 'sum']
+      fields = '__all__'
+
 
 class ExtChoiceSerializer(serializers.ModelSerializer):
    id_service = ExtServiceSerializer(read_only=True)
    id_worker = WorkerSerializer(read_only=True)
+   id_order = ExtOrderSerializer(read_only=True)
    class Meta:
       model = Choice
       fields = '__all__'
 
 
-class ExtOrderSerializer(serializers.ModelSerializer):
-   id_choice = ExtChoiceSerializer(read_only=True)
-   id_status = StatusSerializer(read_only=True)
-   id_manager = WorkerSerializer(read_only=True)
-   id_client = ClientSerializer(read_only=True)
-   class Meta:
-      model = Order
-      fields = ['id_order', 'id_status', 'order_date', 'sum']
+
+class LoginRequestSerializer(serializers.Serializer):
+    model = User
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
