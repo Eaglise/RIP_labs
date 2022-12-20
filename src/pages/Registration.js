@@ -1,0 +1,93 @@
+import React, {Component} from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+    BrowserRouter,
+    Switch,
+    Route,
+    Link,
+    useParams,
+    useRouteMatch
+} from "react-router-dom";
+
+class Registration extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            isLoaded: false,
+            username:null,
+            email:null,
+            password:null,
+            first_name:null,
+            last_name:null,
+        }
+    }
+    componentDidMount(){
+
+    }
+    render() {
+        const {error, isLoaded, items, username, email, password, first_name, last_name} = this.state;
+        const reg=()=>{
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: this.state.username, email:this.state.email,
+                    password:this.state.password, first_name:this.state.first_name, last_name:this.state.last_name })
+            };
+            fetch(`http://127.0.0.1:8000/add_user`, requestOptions)
+
+            console.log(this.state)
+
+        }
+        const update_username_value=(new_username_value)=>{
+            this.setState({username:new_username_value});
+            console.log(new_username_value);
+        }
+        const update_email_value=(new_email_value)=>{
+            this.setState({email:new_email_value});
+            console.log(new_email_value);
+        }
+        const update_password_value=(new_password_value)=>{
+            this.setState({password:new_password_value});
+            console.log(new_password_value);
+        }
+        const update_first_name_value=(new_first_name_value)=>{
+            this.setState({first_name:new_first_name_value});
+            console.log(new_first_name_value);
+        }
+        const update_last_name_value=(new_last_name_value)=>{
+            this.setState({last_name:new_last_name_value});
+            console.log(new_last_name_value);
+        }
+
+        return (
+            <div>
+                <div className={"assortment"}>
+                    Регистрация
+                </div>
+                <form className={"reg_form"}>
+                    <input type={"text"} placeholder={"Логин"} className={"username_input"}
+                           value={username}
+                           onChange={(event)=>update_username_value(event.target.value)}/>
+                    <br/><input type={"text"} placeholder={"Пароль"} className={"password_input"}
+                           value={password}
+                           onChange={(event)=>update_password_value(event.target.value)}/>
+                    <br/><input type={"text"} placeholder={"Имя"} className={"first_name_input"}
+                           value={first_name}
+                           onChange={(event)=>update_first_name_value(event.target.value)}/>
+                    <br/><input type={"text"} placeholder={"Фамилия"} className={"last_name_input"}
+                           value={last_name}
+                           onChange={(event)=>update_last_name_value(event.target.value)}/>
+                    <br/><input type={"text"} placeholder={"Почта"} className={"email_input"}
+                           value={email}
+                           onChange={(event)=>update_email_value(event.target.value)}/>
+                </form>
+                <input id="buy_button" className="buy_button" type="submit" value="Регистрация"
+                       onClick={()=>{reg(); alert(`Вы успешно зарегистрированы`)}}/>
+
+            </div>
+        );
+    }
+}
+
+export default Registration;

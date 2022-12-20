@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import "../styles/ServiceCardStyle.css";
 
 const ServiceCard = (service) => {
-    console.log(service);
+
     return <Card className="card2" border="dark">
         <Card.Img className="card-img-top2" variant="top" src={`${service.image}`} height={300} width={100}/>
         <Card.Body>
@@ -13,11 +13,14 @@ const ServiceCard = (service) => {
             </div>
             <div className="card-body2">
                 <Card.Text>
-                    <br/>
+                    <div>
+                        Категория: {service.id_category['category_name']}
+                    </div>
+
                     <div>
                         Описание: {service.description}
                     </div>
-                    <br/>
+
                     <div>
                         Цена: от {service.price} руб.
                     </div>
@@ -25,7 +28,8 @@ const ServiceCard = (service) => {
                 </Card.Text>
             </div>
             <br/>
-            <Button className="card-link-to2" href={`http://localhost:3000/services/`} variant="dark">Назад</Button>
+
+            {/*<Button className="card-link-to2" href={`http://localhost:3000/services/`} variant="dark">Назад</Button>*/}
         </Card.Body>
     </Card>
 }

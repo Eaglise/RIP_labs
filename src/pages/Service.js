@@ -5,22 +5,30 @@ import {Link} from "react-router-dom";
 import {fetchService} from "../store/serviceSlice";
 import BasicBreadcrumbs from "../components/Breadcrumbs";
 import {useParams} from "react-router";
-import {addChoice, fetchOrder, putOrder} from "../store/buySlice";
+import {addChoice, fetchOrder, putOrder, fetchCart, updateUserComment} from "../store/buySlice";
 import ServiceCard from "../components/ServiceCard";
 
 export const Service=()=>{
-    const { service_pk } = useParams();
+    const { id_service } = useParams();
     const { service } = useSelector((state) => state.service);
     const { serviceStatus } = useSelector(state => state.serviceStatus)
     const { serviceError } = useSelector(state => state.serviceError)
     const { order } = useSelector((state) => state.order);
+    const { cart } = useSelector((state) => state.cart);
     const { isUser } = useSelector((state) => state.isUser);
+    const { user_comment } = useSelector((state) => state.user_comment);
 
     const dispatch = useDispatch();
 
+    const handleChange = (e) => {
+        dispatch(updateUserComment(e.target.value))
+    }
+
     useEffect(() => {
+
         const fetchData = async () => {
-            dispatch(fetchService(service_pk))
+            dispatch(fetchService(id_service))
+            dispatch(fetchCart())
         }
         fetchData()
 
@@ -40,8 +48,8 @@ export const Service=()=>{
                         text: 'Услуги'
                     },
                     {
-                        ref: `/services/${service_pk}`,
-                        text: `Услуга №${service_pk}`
+                        ref: `/services/${id_service}`,
+                        text: `Услуга №${id_service}`
                     }
                 ]}/>
             }
@@ -57,23 +65,36 @@ export const Service=()=>{
                             <Row xs={1} md={1} className="g-1">
                                 <ServiceCard {...service}/>
                             </Row>
-
-                            <input id="buy_button" className="buy_button" type="submit" value="Заказ" //TODO
+                            {/*поле для ввода коммента*/}
+                            <br/>
+                            <input type="text" className="field" name="comment" value={user_comment} onChange={handleChange}
+                                   placeholder="Пожалуйста, оставьте здесь подробности о желаемой услуге и комментарии к заказу."/>
+                            <br/>
+                            <br/>
+                            <input id="buy_button" className="card-link-to2" type="submit" variant="primary" value="Заказ"
                                    onClick={() => {
-                                           dispatch(addChoice({
-                                               id_service: service_pk,
-                                               id_worker: 1,
-                                               comment: 'comment'
-                                           }))
-                                           dispatch(putOrder({
-                                               id_client: 1,
-                                               id_manager: 1,
-                                               // id_choice: order.id_choice,
-                                               // id_status: order.id_status,
-                                               // sum: order.sum + service.price,
-                                               sum: service.price
-                                           }))
-                                           alert(`Продукт добавлен в корзину.`)
+                                       console.log(cart)
+                                       console.log(service)
+                                       console.log(cart.status)
+                                       console.log(cart.sum, service.price)
+                                       console.log(user_comment)
+                                       dispatch(addChoice({
+                                           id_service: service.id_service,
+                                           id_worker: 1,
+                                           id_order: cart.id_order,
+                                           comment: user_comment
+                                       }))
+
+                                       alert(`Услуга выбрана.`)
+                                       dispatch(putOrder({
+                                           id_order: cart.id_order,
+                                           id_client: localStorage.getItem('userId'),
+                                           id_manager: 1,
+                                           status: cart.status['id_status'],
+                                           sum: cart.sum + service.price,
+
+                                       }))
+
 
 
                                    }}/>

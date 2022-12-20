@@ -4,11 +4,12 @@ import {fetchServices} from "./servicesSlice";
 
 export const fetchService = createAsyncThunk(
     'service/fetchService',
-    async (service_pk) => {
-        const response = await axios(`http://127.0.0.1:8000/services/${service_pk}/`);
+    async (id_service) => {
+        const response = await axios(`http://127.0.0.1:8000/ext_services/${id_service}/`);
         return response.data
     }
 )
+
 
 export const serviceSlice = createSlice({
     name: "serviceSlice",
@@ -18,9 +19,7 @@ export const serviceSlice = createSlice({
         serviceError:null
     },
     reducers: {
-        // set_certificate_pk: (state, action) => {
-        //   state.certificate_pk = action.payload;
-        // }
+
     },
 
     extraReducers: (builder) => {

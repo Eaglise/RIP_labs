@@ -5,9 +5,7 @@ import serviceReducer from "./serviceSlice";
 import buyReducer from './buySlice'
 export default configureStore({
     reducer: {
-        // categories: categoryReducer,
-        // categoriesStatus:categoryReducer,
-        // categoriesError:categoryReducer,
+
         services: servicesReducer,
         servicesStatus:servicesReducer,
         servicesError:servicesReducer,
@@ -20,6 +18,7 @@ export default configureStore({
         serviceStatus: serviceReducer,
         serviceError: serviceReducer,
         choices:buyReducer,
+        curr_choices:buyReducer,
         buyStatus:buyReducer,
         buyError:buyReducer,
         // amount:buyReducer,
@@ -30,5 +29,6 @@ export default configureStore({
         sumStatus: buyReducer,
         isUser: buyReducer,
         auth:buyReducer,
+        user_comment:buyReducer,
     },
 });
