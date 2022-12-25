@@ -80,13 +80,41 @@ export const putOrder = createAsyncThunk(
             }
         }
         console.log(newOrder)
-        const response = await axios.put(`http://127.0.0.1:8000/order/${newOrder.id_order}/`,
-            {
+        let body={}
+        if(newOrder.method==='BUY'){
+            body = {
                 sum:newOrder.sum,
                 id_client:newOrder.id_client,
                 id_manager:newOrder.id_manager,
-                status:newOrder.status
-            }, requestOptions);
+                status:newOrder.status,
+                completion_date:new Date(),
+            }
+        }
+        else{
+            if(newOrder.method==='CLOSING'){
+
+                body = {
+                    sum:newOrder.sum,
+                    id_client:newOrder.id_client,
+                    id_manager:newOrder.id_manager,
+                    status:newOrder.status,
+                    closing_date:new Date(),
+
+                }
+            }
+            else{
+                body = {
+                    sum:newOrder.sum,
+                    id_client:newOrder.id_client,
+                    id_manager:newOrder.id_manager,
+                    status:newOrder.status,
+
+                }
+            }
+        }
+
+        const response = await axios.put(`http://127.0.0.1:8000/order/${newOrder.id_order}/`,
+            body, requestOptions);
         return response.data
     }
 )
@@ -155,6 +183,62 @@ export const fetchOldOrder = createAsyncThunk(
         return response.data
     }
 )
+export const fetchOldOrders = createAsyncThunk(
+    'buy/fetchOldOrders',
+    async () => {
+        const token = localStorage.getItem('accessToken')
+        const requestOptions = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept' : 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }
+        const response = await axios(`http://127.0.0.1:8000/order?old&deep`, requestOptions);
+        return response.data
+    }
+)
+export const filterOrders = createAsyncThunk(
+    'buy/filterOrders',
+    async (params) => {
+        const token = localStorage.getItem('accessToken')
+        const requestOptions = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept' : 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }
+        let reqStr=`http://127.0.0.1:8000/order/?`
+        let parsAreEmpty=true;
+        if(params['user']>0){
+            reqStr+=`user=${params['user']}&`
+        }
+        if(params['status']>0){
+            reqStr+=`status=${params['status']}&`
+            parsAreEmpty=false
+        }
+        if(params['start']!==null&&params['end']!==null){
+            reqStr+=`start=${params['start']}&end=${params['end']}&`
+            parsAreEmpty=false
+
+        }
+        if(params['deep']===true){
+            reqStr+=`deep&`
+        }
+        if(params['old']===true){
+            reqStr+=`old&`
+        }
+        if(parsAreEmpty){
+            reqStr+=`old&`
+
+        }
+        console.log('Filtering with ', reqStr)
+
+        const response = await axios(reqStr, requestOptions);
+        return response.data
+    }
+)
 export const getSum = createAsyncThunk(
     'buy/getSum',
     async (items) => {
@@ -177,6 +261,7 @@ export const buySlice = createSlice({
         cart:[],
         order:null,
         oldOrder:[],
+        oldOrders:[],
         sum:0,
         sumStatus : 'loading',
         isUser:true,
@@ -276,6 +361,12 @@ export const buySlice = createSlice({
             })
             .addCase(fetchOldOrder.fulfilled, (state, action) => {
                 state.oldOrder=action.payload
+            })
+            .addCase(fetchOldOrders.fulfilled, (state, action) => {
+                state.oldOrders=action.payload
+            })
+            .addCase(filterOrders.fulfilled, (state, action) => {
+                state.oldOrders=action.payload
             })
     },
 });

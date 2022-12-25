@@ -71,7 +71,7 @@ export const Service=()=>{
                                    placeholder="Пожалуйста, оставьте здесь подробности о желаемой услуге и комментарии к заказу."/>
                             <br/>
                             <br/>
-                            <input id="buy_button" className="card-link-to2" type="submit" variant="primary" value="Заказ"
+                            <input id="buy_button" className="buy_button" type="submit" variant="primary" value="Заказ"
                                    onClick={() => {
                                        console.log(cart)
                                        console.log(service)

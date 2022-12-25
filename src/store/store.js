@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import servicesReducer from "./servicesSlice";
 import serviceReducer from "./serviceSlice";
 import buyReducer from './buySlice'
+import managerReducer from './managerSlice';
 export default configureStore({
     reducer: {
 
@@ -25,10 +26,21 @@ export default configureStore({
         cart:buyReducer,
         order:buyReducer,
         oldOrder:buyReducer,
+        oldOrders:buyReducer,
         sum:buyReducer,
         sumStatus: buyReducer,
         isUser: buyReducer,
         auth:buyReducer,
         user_comment:buyReducer,
+
+        categories:managerReducer,
+        users:managerReducer,
+        statusList:managerReducer,
+        pickedStatus:managerReducer,
+        pickedStart:managerReducer,
+        pickedEnd: managerReducer,
+        pickedUser:managerReducer,
+
+        isManager:managerReducer,
     },
 });

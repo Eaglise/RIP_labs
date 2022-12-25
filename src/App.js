@@ -1,7 +1,7 @@
 import './App.css';
 import {Navbar,Nav,Container} from 'react-bootstrap';
 import {BrowserRouter, Routes, Route, Link} from "react-router-dom";
-import { lazy, Suspense } from 'react';
+import {lazy, Suspense, useEffect, useState} from 'react';
 
 import {Services} from './pages/Services';
 import {Service} from './pages/Service';
@@ -13,6 +13,9 @@ import {updateUserState} from "./store/buySlice";
 import Registration from "./pages/Registration"
 import Auth from "./pages/Auth"
 import Logout from "./pages/Logout"
+import ManagerAdd from "./pages/managerPages/Add";
+import ManagerEdit from "./pages/managerPages/Edit";
+import ManagerOrders from "./pages/managerPages/ManagerOrders";
 
 const LoginPage = lazy(() => import('./pages/Auth'));
 const Register = lazy(() => import('./pages/Registration'));
@@ -72,6 +75,13 @@ function App() {
                         <Route path="/logout" element={<Logout/>}/>
                         <Route path="/reg" element={<Registration/>}/>
                         <Route path="/auth" element={<Auth/>}/>
+
+                        <Route path="/manager/add" element={<ManagerAdd/>}/>
+                        <Route path="/manager/edit" element={<ManagerEdit/>}/>
+                        <Route path="/manager/orders" element={<ManagerOrders/>}/>
+
+
+
                     </Routes>
                 </div>
             </div>

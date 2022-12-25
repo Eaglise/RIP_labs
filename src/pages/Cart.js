@@ -78,34 +78,43 @@ export const Cart=()=>{
                                 </Row>
 
 
-                                    <div className='sum'>
-                                        Сумма: {order.sum} руб.
-                                    <div>
-                                            <Button variant="primary"
-                                                    onClick={async ()=>{
-                                                        await dispatch(putOrder({
-                                                            id_client: order.id_client,
-                                                            id_manager: order.id_manager,
-                                                            status: Math.floor(Math.random() * 5) + 2,
-                                                            sum: order.sum,
-                                                            id_order: Number(order.id_order)
-                                                        }))
-                                                            .then(async()=>{
-                                                                await dispatch(fetchCart())
-                                                            })
-                                                            .then(async()=>{
-                                                                await dispatch(fetchOrder())
-                                                            })
-                                                            .then(async()=>{
-                                                                await dispatch(fetchOldOrder())
-                                                            })
-                                                            .finally(async ()=>{
-                                                                await dispatch(fetchCurrChoice())
-                                                            })
+                                {order &&
+                                    <>
 
-                                                    }}>Оплатить</Button>{' '}
+                                        <div className='sum'>
+                                            <>Сумма: {order.sum} руб.</>
+
+                                            <div>
+                                                <Button variant="primary"
+                                                        onClick={async () => {
+                                                            await dispatch(putOrder({
+                                                                id_client: order.id_client,
+                                                                id_manager: order.id_manager,
+                                                                // status: Math.floor(Math.random() * 5) + 2,
+                                                                status: 2,
+                                                                sum: order.sum,
+                                                                id_order: Number(order.id_order),
+                                                                method: 'BUY',
+                                                            }))
+                                                                .then(async () => {
+                                                                    await dispatch(fetchCart())
+                                                                })
+                                                                .then(async () => {
+                                                                    await dispatch(fetchOrder())
+                                                                })
+                                                                .then(async () => {
+                                                                    await dispatch(fetchOldOrder())
+                                                                })
+                                                                .finally(async () => {
+                                                                    await dispatch(fetchCurrChoice())
+                                                                })
+
+                                                        }}>Оплатить</Button>{' '}
+                                            </div>
                                         </div>
-                                    </div>
+
+                                    </>
+                                }
 
 
                             </div>
@@ -119,8 +128,8 @@ export const Cart=()=>{
                         }
                         {oldOrder.length!==0 &&
                             <div>
-                            <h1>-------------------------</h1>
-                            <h1>Ваши прошлые заказы</h1>
+                                <h1>-------------------------</h1>
+                                <h1>Ваши прошлые заказы</h1>
                             </div>
                         }
                         {oldOrder.map((item, index) => {
