@@ -4,7 +4,8 @@ from Pensione.models import *
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, IsAdminUser, \
+    IsManagerOrReadOnly
 from rest_framework.response import Response
 from django.db.models import Min, Max
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -18,9 +19,10 @@ from rest_framework.views import APIView
 from django.conf import settings
 import uuid
 
-
+@permission_classes([IsManagerOrReadOnly])
+@authentication_classes([JWTAuthentication])
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('id_category')
     serializer_class = CategorySerializer
 
 
@@ -38,14 +40,27 @@ class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
-
+# @permission_classes([IsAuthenticated])
+@permission_classes([IsManagerOrReadOnly])
+@authentication_classes([JWTAuthentication])
+# @group_required('Manager')
 class StatusViewSet(viewsets.ModelViewSet):
-    queryset = Status.objects.all()
     serializer_class = StatusSerializer
 
+    def get_queryset(self):
+        params = self.request.query_params.dict()
+        if 'old' in params:
+            queryset = Status.objects.filter(id_status__gt=1).order_by("id_status")
+        else:
+            queryset = Status.objects.all().order_by("id_status")
+        return queryset
 
+
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
 class ChoiceViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated]
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
 
@@ -65,9 +80,20 @@ class ExtServiceViewSet(viewsets.ModelViewSet):
 def min_max_price(request):
    return Response(Service.objects.aggregate(max_price=Max('price'), min_price=Min('price')))
 
-
+@permission_classes([IsManagerOrReadOnly])
+@authentication_classes([JWTAuthentication])
 class ServiceViewSet(viewsets.ModelViewSet):
    serializer_class = ServiceSerializer
+
+   def get_serializer(self, *args, **kwargs):
+       params = self.request.query_params.dict()
+       if 'deep' in params:
+           serializer_class = ExtServiceSerializer
+       else:
+           serializer_class = ServiceSerializer
+       kwargs['context'] = self.get_serializer_context()
+
+       return serializer_class(*args, **kwargs)
 
    def get_queryset(self):
       queryset =Service.objects.all()
@@ -88,12 +114,17 @@ class ServiceViewSet(viewsets.ModelViewSet):
       return queryset
 
 
+@authentication_classes([JWTAuthentication])
 class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     def get_serializer(self, *args, **kwargs):
       params = self.request.query_params.dict()
       if 'user' in params and 'old' in params:
          serializer_class = ExtOrderSerializer
+      elif 'deep' and 'old' in params:
+          serializer_class = ExtOrderSerializer
+      elif 'deep' in params:
+          serializer_class = ExtOrderSerializer
       else:
          serializer_class = OrderSerializer
       kwargs['context'] = self.get_serializer_context()
@@ -102,7 +133,28 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
       params = self.request.query_params.dict()
-      if 'user' in params and 'current' in params:
+
+      if 'user' in params and 'start' in params and 'end' in params and 'status' in params:
+          queryset = Order.objects.filter(id_client=params['user'], status=params['status'],
+                                          order_date__gte=params['start'], order_date__lte=params['end']).order_by('-order_date', 'id_order')
+      elif 'user' in params and 'start' in params and 'end' in params:
+          queryset = Order.objects.filter(id_client=params['user'], status__gt=1,
+                                          order_date__gte=params['start'], order_date__lte=params['end']).order_by('-order_date', 'id_order')
+      elif 'user' in params and 'start' in params and 'end' in params:
+          queryset = Order.objects.filter(status__gt=1,order_date__gte=params['start'], order_date__lte=params['end']).order_by('-order_date', 'id_order')
+      elif 'start' in params and 'end' in params and 'status' in params:
+          queryset = Order.objects.filter(status=params['status'],
+                                          order_date__gte=params['start'], order_date__lte=params['end']).order_by('-order_date', 'id_order')
+      elif 'start' in params and 'end' in params:
+          queryset = Order.objects.filter(status__gt=1,
+                                          order_date__gte=params['start'], order_date__lte=params['end']
+                                          ).order_by(
+              '-order_date', 'id_order')
+
+      elif 'user' in params and 'status' in params:
+          queryset = Order.objects.filter(id_client=params['user'],status=params['status']).order_by('-order_date', 'id_order')
+
+      elif 'user' in params and 'current' in params:
          queryset = Order.objects.filter(id_client=params['user'], status=1)
          if (len(queryset) == 0):
             new_order = Order(id_client=params['user'], status=1, sum=0)
@@ -111,18 +163,23 @@ class OrderViewSet(viewsets.ModelViewSet):
       elif 'user' in params and 'old' in params:
          queryset = Order.objects.filter(id_client=params['user'], status__gt=1).order_by('-order_date', '-id_order')
       elif 'user' in params:
-         queryset = Order.objects.filter(id_client=params['user'])
+         queryset = Order.objects.filter(id_client_id=params['user'])
          if (len(queryset) == 0):
-            new_order = Order(id_client=params['user'], status=1, sum=0)
+            new_order = Order(id_client_id=params['user'], status_id=1, sum=0)
             new_order.save()
-         queryset = Order.objects.filter(id_client=params['user'])
+         queryset = Order.objects.filter(id_client_id=params['user'])
+      elif 'old' in params:
+         queryset=Order.objects.filter(status__id_status__gt=1).order_by('-order_date', 'id_order')
+      elif 'status' in params:
+          queryset=Order.objects.filter(status=params['status'])
       else:
-         queryset = Order.objects.all()
+         queryset = Order.objects.all().order_by('-order_date', 'id_order')
       return queryset
 
 
+
 class CurrOrdViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
     serializer_class = ExtOrderSerializer
     def get_queryset(self):
       params = self.request.query_params.dict()
@@ -194,7 +251,23 @@ def login(request: Request):
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
 def user(request: Request):
-    print(UserSerializer(request.user).data)
+    print('USERINFO')
+    # print(UserSerializer(request.user))
+
+    userInfo=dict(UserSerializer(request.user).data)
+    groups=list(User.objects.get(id=userInfo['id']).groups.values_list('name',flat = True))
+    print(groups)
+
+
+
     return Response({
-        'data': UserSerializer(request.user).data
+        'data': UserSerializer(request.user).data,
+        'groups': User.objects.get(id=userInfo['id']).groups.values_list('name',flat = True)
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_moder(request):
+    user = request.user
+    return Response(user.groups.filter(name='moderators').exists())

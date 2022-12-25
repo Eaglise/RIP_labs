@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class Category(models.Model):
     id_category = models.AutoField(db_column='ID_category', primary_key=True)
     category_name = models.CharField(db_column='categoryName', unique=True, max_length=50)
@@ -45,7 +44,7 @@ class Client(models.Model):
 
 class Status(models.Model):
     id_status = models.AutoField(db_column='ID_status', primary_key=True)
-    status = models.CharField(db_column="status", max_length=10)
+    status = models.CharField(db_column="status", max_length=16)
 
     def __str__(self):
         return self.status
@@ -58,10 +57,12 @@ class Order(models.Model):
     id_manager = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True)
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
     order_date = models.DateTimeField(db_column='orderDate', auto_now_add=True)
+    completion_date = models.DateTimeField(db_column='completionDate', null=True)
+    closing_date = models.DateTimeField(db_column='closingDate', null=True)
     sum = models.BigIntegerField(default=0)
 
     def __str__(self):
-        return f'Доставка №{self.id_order} --> {self.status.status}'
+        return f'Заказ №{self.id_order} --> {self.id_client.username} {self.status.status}'
 
 
 class Choice(models.Model):
@@ -75,4 +76,3 @@ class Choice(models.Model):
 
     def __str__(self):
         return f'Продажа №{self.id_choice}: {self.id_service.service_name}, доставка: {self.id_order.id_order}'
-

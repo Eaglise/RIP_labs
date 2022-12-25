@@ -50,7 +50,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ]
+        # 'rest_framework.permissions.AllowAny',
+    ],
+    'DATETIME_FORMAT': "%d.%m.%Y %H:%M:%S",
 }
 
 MIDDLEWARE = [
@@ -123,6 +125,8 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Moscow'
 
+DATETIME_INPUT_FORMATS= ['%Y-%m-%d %H:%M:%S']
+
 USE_I18N = True
 
 USE_TZ = True
@@ -143,7 +147,13 @@ BLACKLIST_AFTER_ROTATION = True
 ACCESS_TOKEN_LIFETIME = 10000
 REFRESH_TOKEN_LIFETIME = 100000  # ?
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost',
+                 '127.0.0.1',
+                 '192.168.1.66',
+                 '192.168.0.100',
+                 '192.168.0.101'
+
+                 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
 
